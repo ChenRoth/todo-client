@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
+import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { User } from './models/user';
 import { ITodo } from './models/todo';
@@ -14,7 +15,7 @@ const initialState: State = {
     todos: [],
 }
 
-interface Action {
+export interface Action {
     type: string;
     payload: Record<string, any>;    
 }
@@ -44,6 +45,6 @@ const reducer = (state = initialState, action: Action) => {
 
 export function createReduxStore() {
     const logger = createLogger();
-    const middleware = composeWithDevTools(applyMiddleware(logger));
+    const middleware = composeWithDevTools(applyMiddleware(thunk, logger));
     return createStore(reducer, middleware);
 }
