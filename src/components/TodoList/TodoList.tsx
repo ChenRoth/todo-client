@@ -8,6 +8,7 @@ import { createGetTodosAction } from '../../actions';
 interface TodoListProps {
     todos: ITodo[];
     getTodos(): void;
+    isLoading: boolean;
 }
 
 class _TodoList extends React.Component<TodoListProps> {
@@ -17,7 +18,11 @@ class _TodoList extends React.Component<TodoListProps> {
     }
 
     render() {
-        const { todos } = this.props;
+        const { isLoading, todos } = this.props;
+        if (isLoading) {
+            return 'Getting TODO list...';
+        }
+        
         return (
             <div>
                 {todos.map(todo =>
@@ -30,6 +35,7 @@ class _TodoList extends React.Component<TodoListProps> {
 
 const mapStateToProps = (state: State) => ({
     todos: state.todos,
+    isLoading: state.isGettingTodos,
 });
 
 const mapDispatchToProps = {

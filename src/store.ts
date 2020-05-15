@@ -7,11 +7,13 @@ import { ITodo } from './models/todo';
 
 export interface State {
     user: User | null;
+    isGettingTodos: boolean;
     todos: ITodo[];
 }
 
 const initialState: State = {
     user: null,
+    isGettingTodos: false,
     todos: [],
 }
 
@@ -24,15 +26,32 @@ export enum Actions {
     Login = 'LOGIN',
     Register = 'REGISTER',
     CreateTodo = 'CREATE_TODO',
-    GetTodos = 'GET_TODOS',
+    GetTodosPending = 'GET_TODOS_PENDING',
+    GetTodosSuccess = 'GET_TODOS_SUCCESS',
+    GetTodosFail = 'GET_TODOS_FAIL',
 }
 
 const reducer = (state = initialState, action: Action) => {
     switch (action.type) {
-        case Actions.GetTodos: {
+        case Actions.GetTodosPending: {
+            return {
+                ...state,
+                isGettingTodos: true,
+            }
+        }
+
+        case Actions.GetTodosFail: {
+            return {
+                ...state,
+                isGettingTodos: false,
+            }
+        }
+
+        case Actions.GetTodosSuccess: {
             const { todos } = action.payload;
             return {
                 ...state,
+                isGettingTodos: false,
                 todos,
             }
         }
