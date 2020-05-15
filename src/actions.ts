@@ -1,41 +1,26 @@
 import { Actions, Action } from "./store"
-import { ITodo } from "./models/todo"
 import { Dispatch } from "redux";
+import axios from 'axios';
+import { ITodo } from "./models/todo";
 
 // this is an action creator
 // action creators are functions that return an action object
 export const createGetTodosAction = () => {
-    // call server API
-
     return async (dispatch: Dispatch<Action>) => {
         dispatch({
             type: Actions.GetTodosPending,
             payload: {},
         });
+        // login/register are not implemented yet, so we get the token using POSTMAN
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNoZW4iLCJpYXQiOjE1ODk1MzMzMDZ9.fEERckCIQS5QHQHBmE5vM6eFJFgpv-83bnk2sYyTAFU';
         try {
-            const todos = await new Promise<ITodo[]>(resolve => {
-                setTimeout(() => {
-                    const todos: ITodo[] = [
-                        {
-                            id: '1',
-                            description: 'buy milk',
-                            date: new Date(2020, 6, 1),
-                        },
-                        {
-                            id: '2',
-                            description: 'clean the house',
-                            date: new Date(2020, 6, 2),
-                        },
-                        {
-                            id: '3',
-                            description: 'sell the car',
-                            date: new Date(2020, 8, 5),
-                        },
-                    ];
-                    resolve(todos);
-                }, 2000);
+            const response = await axios.get<ITodo[]>('http://localhost:3001/todos', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
-
+            const todos = response.data;
+            
             dispatch({
                 type: Actions.GetTodosSuccess,
                 payload: {
