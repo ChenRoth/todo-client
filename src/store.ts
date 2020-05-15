@@ -6,12 +6,14 @@ import { User } from './models/user';
 import { ITodo } from './models/todo';
 
 export interface State {
+    isLoggedIn: boolean;
     user: User | null;
     isGettingTodos: boolean;
     todos: ITodo[];
 }
 
 const initialState: State = {
+    isLoggedIn: false,
     user: null,
     isGettingTodos: false,
     todos: [],
@@ -33,6 +35,13 @@ export enum Actions {
 
 const reducer = (state = initialState, action: Action) => {
     switch (action.type) {
+        case Actions.Register: {
+            return {
+                ...state,
+                isLoggedIn: true,
+            }
+        }
+
         case Actions.GetTodosPending: {
             return {
                 ...state,

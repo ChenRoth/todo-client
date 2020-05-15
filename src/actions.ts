@@ -2,6 +2,7 @@ import { Actions, Action } from "./store"
 import { Dispatch } from "redux";
 import axios from 'axios';
 import { ITodo } from "./models/todo";
+import { RegisterResult } from "./models/registerResult";
 
 // this is an action creator
 // action creators are functions that return an action object
@@ -11,8 +12,8 @@ export const createGetTodosAction = () => {
             type: Actions.GetTodosPending,
             payload: {},
         });
-        // login/register are not implemented yet, so we get the token using POSTMAN
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNoZW4iLCJpYXQiOjE1ODk1MzMzMDZ9.fEERckCIQS5QHQHBmE5vM6eFJFgpv-83bnk2sYyTAFU';
+        
+        const token = localStorage.getItem('token');
         try {
             const response = await axios.get<ITodo[]>('http://localhost:3001/todos', {
                 headers: {
@@ -20,7 +21,7 @@ export const createGetTodosAction = () => {
                 }
             });
             const todos = response.data;
-            
+
             dispatch({
                 type: Actions.GetTodosSuccess,
                 payload: {
@@ -33,6 +34,23 @@ export const createGetTodosAction = () => {
                 type: Actions.GetTodosFail,
                 payload: {},
             });
+        }
+    }
+}
+
+export const registerAction = (id: string, password: string) => {
+    return async (dispatch: Dispatch<Action>) => {
+        const {data: result} = await axios.post<RegisterResult>('http://localhost:3001/users/register', {
+            id,
+            password,
+        });
+
+        if (result.success) {
+            dispatch({
+                type: Actions.Register,
+                payload: {}
+            });
+            localStorage.setItem('token', result.token);
         }
     }
 }
